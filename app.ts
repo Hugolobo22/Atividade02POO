@@ -1,22 +1,23 @@
-abstract class Item{
+
+abstract class Item {
     constructor(nome: string, descricao: string) {
         this.nome = nome;
         this.descricao = descricao;
     }
     protected nome: string;
     protected descricao: string;
-    
-    getNome(){
+
+    getNome() {
         return this.nome
     }
-    setNome(n: string){
+    setNome(n: string) {
         this.nome = n
     }
 
-    getDesc(){
+    getDesc() {
         return this.descricao
     }
-    setDesc(d: string){
+    setDesc(d: string) {
         this.descricao = d
     }
     abstract aplicarBeneficios(personagem: Personagem);
@@ -24,22 +25,22 @@ abstract class Item{
     abstract removerBeneficios(personagem: Personagem);
 }
 
-class ItemInventario{
+class ItemInventario {
     private quantidade: number;
     private item: Item
 
-    constructor(quantidade: number, item: Item){
+    constructor(quantidade: number, item: Item) {
         this.quantidade = quantidade;
         this.item = item;
     }
 
-    getItem(){
+    getItem() {
         return this.item
     }
-    getQuant(){
+    getQuant() {
         return this.quantidade
     }
-    setQuant(q: number){
+    setQuant(q: number) {
         this.quantidade = q
     }
 }
@@ -59,7 +60,7 @@ class Arma extends Item {
     }
 }
 
-class Pocao extends Item{
+class Pocao extends Item {
     constructor(nome: string, descricao: string) {
         super(nome, descricao);
     }
@@ -67,7 +68,7 @@ class Pocao extends Item{
         const hpRestaurado = personagem.getMaxHP(0.5)
         const mpRestaurado = personagem.getMaxMP(0.2)
     }
-    removerBeneficios(personagem: Personagem) {}
+    removerBeneficios(personagem: Personagem) { }
 }
 class Personagem {
     private nome: string;
@@ -89,25 +90,25 @@ class Personagem {
         this.arma = arma;
     }
 
-    getNome(){
+    getNome() {
         return this.nome
     }
-    getAtaque(){
+    getAtaque() {
         return this.ataque
     }
-    getDefesa(){
+    getDefesa() {
         return this.defesa
     }
-    getHP(){
+    getHP() {
         return this.hp
     }
-    getMP(){
+    getMP() {
         return this.mp
     }
-    getInventario(){
+    getInventario() {
         return this.inventario
     }
-    getArma(){
+    getArma() {
         return this.arma
     }
 
@@ -127,14 +128,14 @@ class Personagem {
         this.defesa -= valor;
     }
 
-    getMaxHP(valor: number){
-        this.hp *= valor
-    }    
-
-    getMaxMP(valor: number){
+    getMaxHP(valor: number) {
         this.hp *= valor
     }
-    
+
+    getMaxMP(valor: number) {
+        this.hp *= valor
+    }
+
     abrirInventario() {
         console.log("Inventário:");
         this.inventario.getItensInv().forEach((item, indice) => {
@@ -152,14 +153,13 @@ class Personagem {
             this.arma.aplicarBeneficios(this);
         } else if (item instanceof Pocao) {
             item.aplicarBeneficios(this);
-            const itemInventario = this.inventario.getItensInv(item);
-            if (itemInventario) {
-                const quantidadeAtual = itemInventario.getQuant();
-                if (quantidadeAtual > 1) {
-                    itemInventario.setQuant(quantidadeAtual - 1);
-                } else {
-                    this.inventario.removerItem(item);
+
+            for (let i = 0; i < this.inventario.getItensInv().length; i++) {
+
+                if (this.inventario.getItensInv()[i].getItem().getNome() == item.getNome()) {
+                    this.inventario.getItensInv()[i].setQuant(this.inventario.getItensInv()[i].getQuant() - 1);
                 }
+
             }
         }
     }
@@ -167,7 +167,6 @@ class Personagem {
     desequiparArma() {
         if (this.arma) {
             this.arma.removerBeneficios(this);
-            this.getArma() = null
         } else {
             console.log("O personagem não está equipado com uma arma.");
         }
@@ -190,16 +189,16 @@ class Personagem {
     }
 }
 
-class Inventario{
+class Inventario {
     private itens: ItemInventario[];
     private quantidadeMaximaItens: number;
 
-    constructor(quantidadeMaximaItens: number){
+    constructor(quantidadeMaximaItens: number) {
         this.itens = []
         this.quantidadeMaximaItens = quantidadeMaximaItens
     }
 
-    getItensInv(){
+    getItensInv() {
         return this.itens
     }
 
@@ -210,7 +209,7 @@ class Inventario{
     getQuantidadeMaximaItens(): number {
         return this.quantidadeMaximaItens;
     }
-    
+
     adicionarItem(item: Item, quantidade: number = 1) {
         if (this.itens.length >= this.quantidadeMaximaItens) {
             throw new InventarioLimiteException("Inventário cheio. Não é possível adicionar mais itens.");
@@ -240,7 +239,7 @@ class InventarioLimiteException extends Error {
     }
 }
 
-class itemMenu{
+class itemMenu {
     private opcao: string;
     private textoOpcao: string
 
@@ -249,17 +248,17 @@ class itemMenu{
         this.textoOpcao = txtop;
     }
 
-    getOp(){
+    getOp() {
         return this.opcao
     }
-    setQuant(o: string){
+    setQuant(o: string) {
         this.opcao = o
     }
 
-    getTxt(){
+    getTxt() {
         return this.textoOpcao
     }
-    setTxt(tx: string){
+    setTxt(tx: string) {
         this.textoOpcao = tx
     }
 }
@@ -269,6 +268,10 @@ class Menu {
 
     constructor() {
         this.itensMenu = [];
+    }
+
+    adicionarItemMenu(opcao: string, textoOpcao: string) {
+        this.itensMenu.push(new itemMenu(opcao, textoOpcao));
     }
 
     imprimirMenu(): string {
@@ -287,4 +290,88 @@ const menu = new Menu();
 const opcaoSelecionada = menu.imprimirMenu();
 console.log("Opção selecionada:", opcaoSelecionada);
 
-const Hugo = new Personagem("Hugo", 10, 5, 15, 15, [], "")
+const Hugo = new Personagem("Hugo", 10, 5, 15, 15, new Inventario(100), new Arma("Espada de Ferro", "Uma espada moldada por um antigo ferreiro."))
+
+class aplicacao{
+
+
+}
+
+class Aplicacao {
+    private menu: Menu;
+    private personagem: Personagem;
+
+    constructor() {
+        this.menu = new Menu();
+        this.personagem = new Personagem("Hugo", 10, 5, 15, 15, new Inventario(100), new Arma("Espada de Ferro", "Uma espada moldada por um antigo ferreiro."));
+        this.configurarMenu();
+    }
+
+    private configurarMenu() {
+        this.menu.adicionarItemMenu('1', 'Equipar Arma');
+        this.menu.adicionarItemMenu('2', 'Tomar Poção');
+        this.menu.adicionarItemMenu('3', 'Adicionar Arma ao Inventário');
+        this.menu.adicionarItemMenu('4', 'Adicionar Poção ao Inventário');
+        this.menu.adicionarItemMenu('5', 'Imprimir Info');
+        this.menu.adicionarItemMenu('6', 'Desequipar Arma');
+        this.menu.adicionarItemMenu('0', 'Sair');
+    }
+
+    executar() {
+        let opcaoSelecionada = '';
+        while (opcaoSelecionada !== '0') {
+            this.menu.imprimirMenu();
+            opcaoSelecionada = this.obterOpcaoUsuario();
+            this.processarOpcao(opcaoSelecionada);
+        }
+    }
+
+    private obterOpcaoUsuario(): string {
+        let entrada = require('prompt-sync')();
+        let n = entrada('Digite a sua opção:');
+        return entrada;
+    }
+
+    private processarOpcao(opcao: string) {
+        switch (opcao) {
+            case '1':
+                this.equiparArma();
+                break;
+            case '2':
+                this.tomarPocao();
+                break;
+            case '3':
+                this.adicionarArmaAoInventario();
+                break;
+            case '4':
+                this.adicionarPocaoAoInventario();
+                break;
+            case '5':
+                console.log(this.personagem.exibirInformacoes());
+                break;
+            case '6':
+                this.desequiparArma();
+                break;
+            case '0':
+                console.log('Saindo da aplicação...');
+                break;
+            default:
+                console.log('Opção inválida. Por favor, escolha uma opção válida.');
+        }
+    }
+
+    private equiparArma() {
+    }
+    private tomarPocao() {
+    }
+    private adicionarArmaAoInventario() {
+
+    }
+    private adicionarPocaoAoInventario() {
+    }
+    private desequiparArma() {
+    }
+}
+
+const app = new Aplicacao();
+app.executar();
