@@ -284,18 +284,12 @@ class Menu {
     }
 }
 
-// Exemplo de uso
 const menu = new Menu();
 
 const opcaoSelecionada = menu.imprimirMenu();
 console.log("Opção selecionada:", opcaoSelecionada);
 
 const Hugo = new Personagem("Hugo", 10, 5, 15, 15, new Inventario(100), new Arma("Espada de Ferro", "Uma espada moldada por um antigo ferreiro."))
-
-class aplicacao{
-
-
-}
 
 class Aplicacao {
     private menu: Menu;
@@ -375,3 +369,5 @@ class Aplicacao {
 
 const app = new Aplicacao();
 app.executar();
+
+// Código rodado no VScode Antes de utilizar o Require mais acima
